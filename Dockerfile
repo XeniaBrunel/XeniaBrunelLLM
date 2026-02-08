@@ -29,4 +29,5 @@ enableXsrfProtection = false\n\
 EXPOSE 8501
 
 # Start the application
-CMD ["streamlit", "run", "main.py"]
+# Run streamlit using app.py instead of main.py
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]
