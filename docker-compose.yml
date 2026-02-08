@@ -10,6 +10,7 @@ services:
       - ./nginx_data:/data
       - ./nginx_letsencrypt:/etc/letsencrypt
     restart: unless-stopped
+
   ollama:
     image: ollama/ollama
     container_name: ollama
@@ -30,7 +31,46 @@ services:
     environment:
       - OLLAMA_HOST=ollama:11434
     command: >
-      sh -c "pip install streamlit ollama && streamlit run app.py"
+      sh -c "pip install streamlit ollama pandas scikit-learn psycopg2-binary && streamlit run app.py"
     depends_on:
       - ollama
+      - db
     restart: unless-stopped
+
+  # Database for storing analysis results and training data
+  db:
+    image: postgres:15
+    container_name: ai-db
+    restart: always
+    environment:
+      POSTGRES_USER: xenia_admin
+      POSTGRES_PASSWORD: xenia_password_2026
+      POSTGRES_DB: forensics_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  # Automation tool for workflows and notifications
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ai-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=xenia_password_2026
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=forensics_db
+      - DB_POSTGRESDB_USER=xenia_admin
+      - DB_POSTGRESDB_PASSWORD=xenia_password_2026
+    depends_on:
+      - db
+
+volumes:
+  nginx_data:
+  nginx_letsencrypt:
+  ollama_data:
+  postgres_data:
