@@ -7,3 +7,19 @@ services:
     volumes:
       - ./ollama_data:/root/.ollama
     restart: unless-stopped
+
+  web:
+    image: python:3.11-slim
+    container_name: ai-detector-web
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8501:8501"
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    command: >
+      sh -c "pip install streamlit ollama && streamlit run app.py"
+    depends_on:
+      - ollama
+    restart: unless-stopped
