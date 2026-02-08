@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Path to your big dataset
-file_path = "AI_Human.csv"
+file_path = "datasets/AI_Human.csv"
 
 print("Reading dataset... please wait, it's a big one!")
 
