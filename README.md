@@ -1,1 +1,1 @@
-# XeniaBrunel AI Factory
+# XeniaBrunel AI Factory Control Center
