@@ -1,0 +1,16 @@
+# Web framework
+streamlit
+
+# Data processing
+pandas
+numpy
+
+# Machine Learning / AI (standard set for forensics/detection)
+torch
+transformers
+scikit-learn
+pillow
+
+# Network and Utilities
+requests
+python-dotenv
