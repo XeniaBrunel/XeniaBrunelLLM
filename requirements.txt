@@ -14,3 +14,4 @@ pillow
 # Network and Utilities
 requests
 python-dotenv
+ollama
