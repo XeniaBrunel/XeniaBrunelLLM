@@ -1,76 +1,56 @@
 services:
-  nginx-proxy:
-    image: 'jc21/nginx-proxy-manager:latest'
-    container_name: nginx-proxy
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
-    volumes:
-      - ./nginx_data:/data
-      - ./nginx_letsencrypt:/etc/letsencrypt
-    restart: unless-stopped
-
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ./ollama_data:/root/.ollama
-    restart: unless-stopped
-
-  web:
-    image: python:3.11-slim
+  # Main Web Application (Streamlit)
+  ai-detector-web:
+    build: .
     container_name: ai-detector-web
-    volumes:
-      - .:/app
-    working_dir: /app
+    restart: always
     ports:
       - "8501:8501"
-    environment:
-      - OLLAMA_HOST=ollama:11434
-    command: >
-      sh -c "pip install streamlit ollama pandas scikit-learn psycopg2-binary && streamlit run app.py"
-    depends_on:
-      - ollama
-      - db
-    restart: unless-stopped
+    # Added flags to allow proxy access and disable CORS/XSRF protection
+    command: streamlit run main.py --server.port=8501 --server.address=0.0.0.0 --server.enableCORS=false --server.enableXsrfProtection=false
+    networks:
+      - ai_network
 
-  # Database for storing analysis results and training data
-  db:
-    image: postgres:15
-    container_name: ai-db
-    restart: always
-    environment:
-      POSTGRES_USER: xenia_admin
-      POSTGRES_PASSWORD: xenia_password_2026
-      POSTGRES_DB: forensics_db
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-
-  # Automation tool for workflows and notifications
-  n8n:
+  # Automation Engine (n8n)
+  ai-n8n:
     image: n8nio/n8n:latest
     container_name: ai-n8n
     restart: always
     ports:
       - "5678:5678"
     environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=xenia_password_2026
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=db
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=forensics_db
-      - DB_POSTGRESDB_USER=xenia_admin
-      - DB_POSTGRESDB_PASSWORD=xenia_password_2026
-    depends_on:
-      - db
+      - N8N_HOST=n8n.xeniabrunel.com
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://n8n.xeniabrunel.com/
+      # Secure cookie is set to true for production HTTPS
+      - N8N_SECURE_COOKIE=true
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - ai_network
+
+  # Reverse Proxy Manager
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./npm_data:/data
+      - ./npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - ai_network
+
+networks:
+  ai_network:
+    driver: bridge
 
 volumes:
-  nginx_data:
-  nginx_letsencrypt:
-  ollama_data:
-  postgres_data:
+  n8n_data:
+  npm_data:
+  npm_letsencrypt:
