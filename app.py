@@ -55,33 +55,41 @@ if st.button("🚀 Start Deep Analysis", use_container_width=True):
     else:
         st.warning("Please enter some text.")
 
-# --- NEW ADMIN BLOCK FOR DATASETS ---
+# --- SECURE ADMIN BLOCK ---
 st.markdown("---")
-st.subheader("🛠 Admin Training Lab")
-with st.expander("Upload New Training Data"):
+st.subheader("🛠 Brunel Training Lab")
+
+with st.expander("🔐 Access Secure Upload Area"):
+    # Password field to prevent unauthorized access
+    access_code = st.text_input("Enter Secret Access Code:", type="password")
+    
+    # We define a simple password
+    SECRET_PASSWORD = "Xenia_Lab_2026" 
+
     uploaded_file = st.file_uploader("Choose a CSV file to expand the brain", type="csv")
     
     if uploaded_file is not None:
         if st.button("Merge to Main Dataset"):
-            try:
-                # Paths setup
-                UPLOAD_DIR = "datasets/uploads"
-                MAIN_DATASET = "datasets/AI_Human.csv"
-                os.makedirs(UPLOAD_DIR, exist_ok=True)
-                
-                # Save uploaded file
-                temp_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
-                with open(temp_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-                
-                # Processing with Pandas
-                new_data = pd.read_csv(temp_path)
-                main_data = pd.read_csv(MAIN_DATASET)
-                
-                # Combine and save
-                combined = pd.concat([main_data, new_data], ignore_index=True)
-                combined.to_csv(MAIN_DATASET, index=False)
-                
-                st.success(f"Done! New total dataset size: {len(combined)} rows.")
-            except Exception as e:
-                st.error(f"Error merging data: {e}")
+            # Check if the code is correct before doing anything
+            if access_code == SECRET_PASSWORD:
+                try:
+                    UPLOAD_DIR = "datasets/uploads"
+                    MAIN_DATASET = "datasets/AI_Human.csv"
+                    os.makedirs(UPLOAD_DIR, exist_ok=True)
+                    
+                    temp_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
+                    with open(temp_path, "wb") as f:
+                        f.write(uploaded_file.getbuffer())
+                    
+                    new_data = pd.read_csv(temp_path)
+                    main_data = pd.read_csv(MAIN_DATASET)
+                    
+                    combined = pd.concat([main_data, new_data], ignore_index=True)
+                    combined.to_csv(MAIN_DATASET, index=False)
+                    
+                    st.success(f"Verified! New total dataset size: {len(combined)} rows.")
+                    st.balloons()
+                except Exception as e:
+                    st.error(f"Error merging data: {e}")
+            else:
+                st.error("❌ Access Denied: Incorrect Secret Code!")
