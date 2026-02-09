@@ -60,18 +60,15 @@ st.markdown("---")
 st.subheader("🛠 Brunel Training Lab")
 
 with st.expander("🔐 Access Secure Upload Area"):
-    # Password field to prevent unauthorized access
     access_code = st.text_input("Enter Secret Access Code:", type="password")
-    
-    # We define a simple password
     SECRET_PASSWORD = "Brunel_2026" 
 
-    uploaded_file = st.file_uploader("Choose a CSV file to expand the brain", type="csv")
-    
-    if uploaded_file is not None:
-        if st.button("Merge to Main Dataset"):
-            # Check if the code is correct before doing anything
-            if access_code == SECRET_PASSWORD:
+    if access_code == SECRET_PASSWORD:
+        st.success("✅ Access Granted")
+        uploaded_file = st.file_uploader("Choose a CSV file to expand the brain", type="csv")
+        
+        if uploaded_file is not None:
+            if st.button("Merge to Main Dataset"):
                 try:
                     UPLOAD_DIR = "datasets/uploads"
                     MAIN_DATASET = "datasets/AI_Human.csv"
@@ -91,5 +88,5 @@ with st.expander("🔐 Access Secure Upload Area"):
                     st.balloons()
                 except Exception as e:
                     st.error(f"Error merging data: {e}")
-            else:
-                st.error("❌ Access Denied: Incorrect Secret Code!")
+    elif access_code != "":
+        st.error("❌ Access Denied: Incorrect Secret Code!")
