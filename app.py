@@ -30,28 +30,28 @@ def analyze_with_model(model_name, text):
 # Analysis button logic
 if st.button("🚀 Start Deep Analysis", use_container_width=True):
     if text_input:
-        with st.spinner('Both AI models are analyzing...'):
-            # Parallel execution for both models
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_llama = executor.submit(analyze_with_model, 'llama3', text_input)
-                future_mistral = executor.submit(analyze_with_model, 'mistral', text_input)
-                
-                llama_result = future_llama.result()
-                mistral_result = future_mistral.result()
-            
-            # Display results in two columns
-            st.subheader("📊 Analysis Results")
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.markdown("### 🦙 Llama 3")
-                st.info(llama_result)
-            
-            with col2:
-                st.markdown("### 🌟 Mistral")
-                st.success(mistral_result)
-            
-            st.balloons()
+        # Step 1: Sequential Analysis (optimized for CPU)
+        with st.spinner('Llama 3 is analyzing...'):
+            llama_result = analyze_with_model('llama3', text_input)
+            st.info("✅ Llama 3 finished")
+
+        with st.spinner('Mistral is analyzing...'):
+            mistral_result = analyze_with_model('mistral', text_input)
+            st.success("✅ Mistral finished")
+
+        # Display results in two columns
+        st.subheader("📊 Analysis Results")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### 🦙 Llama 3")
+            st.write(llama_result)
+        
+        with col2:
+            st.markdown("### 🌟 Mistral")
+            st.write(mistral_result)
+        
+        st.balloons()
     else:
         st.warning("Please enter some text.")
 
