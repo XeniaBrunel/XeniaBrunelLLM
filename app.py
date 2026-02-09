@@ -64,7 +64,7 @@ with st.expander("🔐 Access Secure Upload Area"):
     access_code = st.text_input("Enter Secret Access Code:", type="password")
     
     # We define a simple password
-    SECRET_PASSWORD = "Xenia_Lab_2026" 
+    SECRET_PASSWORD = "Brunel_2026" 
 
     uploaded_file = st.file_uploader("Choose a CSV file to expand the brain", type="csv")
     
