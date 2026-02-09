@@ -1,6 +1,8 @@
 import streamlit as st
 from ollama import Client
 import concurrent.futures
+import os
+import pandas as pd
 
 # Initialize Ollama client
 client = Client(host='http://ollama:11434')
@@ -52,3 +54,34 @@ if st.button("🚀 Start Deep Analysis", use_container_width=True):
             st.balloons()
     else:
         st.warning("Please enter some text.")
+
+# --- NEW ADMIN BLOCK FOR DATASETS ---
+st.markdown("---")
+st.subheader("🛠 Admin Training Lab")
+with st.expander("Upload New Training Data"):
+    uploaded_file = st.file_uploader("Choose a CSV file to expand the brain", type="csv")
+    
+    if uploaded_file is not None:
+        if st.button("Merge to Main Dataset"):
+            try:
+                # Paths setup
+                UPLOAD_DIR = "datasets/uploads"
+                MAIN_DATASET = "datasets/AI_Human.csv"
+                os.makedirs(UPLOAD_DIR, exist_ok=True)
+                
+                # Save uploaded file
+                temp_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
+                with open(temp_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+                
+                # Processing with Pandas
+                new_data = pd.read_csv(temp_path)
+                main_data = pd.read_csv(MAIN_DATASET)
+                
+                # Combine and save
+                combined = pd.concat([main_data, new_data], ignore_index=True)
+                combined.to_csv(MAIN_DATASET, index=False)
+                
+                st.success(f"Done! New total dataset size: {len(combined)} rows.")
+            except Exception as e:
+                st.error(f"Error merging data: {e}")
