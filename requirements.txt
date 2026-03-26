@@ -5,7 +5,7 @@ streamlit
 pandas
 numpy
 
-# Machine Learning / AI (standard set for forensics/detection)
+# Machine Learning
 torch
 transformers
 scikit-learn
