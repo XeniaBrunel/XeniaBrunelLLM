@@ -34,11 +34,16 @@ The whole process takes 15-30 seconds because I'm running it on CPU not GPU. GPU
 
 ## Files
 
+- `.gitignore` - Tells Git to ignore the datasets/ folder (too large for GitHub - 1.1GB)
+- `Dockerfile` - Builds the Streamlit container. Sets up Python environment.
+- `analyze_data.py` - Python script to analyze the Kaggle dataset.
 - `app.py` - Streamlit application
 - `docker-compose.yml` - sets up containers
 - `requirements.txt` - Python packages
 - `datasets/AI_Human.csv` - the big dataset from Kaggle
 - `datasets/uploads/` - for new examples you upload
+- `npm_data/` - Nginx Proxy Manager configuration and database
+- `npm_letsencrypt/` - SSL certificates from Let's Encrypt
 
 ## Features
 
