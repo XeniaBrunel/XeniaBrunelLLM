@@ -1,14 +1,14 @@
 import pandas as pd
 
-# Path to your big dataset
+# Path to dataset
 file_path = "datasets/AI_Human.csv"
 
 print("Reading dataset... please wait, it's a big one!")
 
-# We read only the 'generated' column to save memory
+# Only the 'generated' column to save memory
 # 0.0 is Human, 1.0 is AI
 try:
-    # Reading the file in chunks or just specific columns
+    # If need the file in chunks or just specific columns
     df = pd.read_csv(file_path, usecols=['generated'])
     
     total_rows = len(df)
