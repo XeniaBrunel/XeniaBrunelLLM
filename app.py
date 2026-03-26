@@ -4,10 +4,10 @@ import concurrent.futures
 import os
 import pandas as pd
 
-# Initialize Ollama client
+# Ollama client
 client = Client(host='http://ollama:11434')
 
-# UI Configuration with English comments
+# UI Configuration
 st.set_page_config(page_title="AI Forensics Lab", page_icon="🕵️‍♀️", layout="wide")
 st.title("🕵️‍♀️ AI Text Forensics: xeniabrunel.com")
 st.markdown("**Parallel Model Comparison: Llama 3 vs Mistral**")
@@ -16,7 +16,7 @@ st.markdown("---")
 # User text input
 text_input = st.text_area("Paste the text for analysis:", height=250, placeholder="Enter text here...")
 
-# Function to analyze with a specific model
+# Analyze with a specific model
 def analyze_with_model(model_name, text):
     try:
         response = client.generate(
@@ -27,7 +27,7 @@ def analyze_with_model(model_name, text):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# Analysis button logic
+# Analysis button
 if st.button("🚀 Start Deep Analysis", use_container_width=True):
     if text_input:
         # Step 1: Sequential Analysis (optimized for CPU)
@@ -39,7 +39,7 @@ if st.button("🚀 Start Deep Analysis", use_container_width=True):
             mistral_result = analyze_with_model('mistral', text_input)
             st.success("✅ Mistral finished")
 
-        # Display results in two columns
+        # Display results - two columns
         st.subheader("📊 Analysis Results")
         col1, col2 = st.columns(2)
         
@@ -55,7 +55,7 @@ if st.button("🚀 Start Deep Analysis", use_container_width=True):
     else:
         st.warning("Please enter some text.")
 
-# --- SECURE ADMIN BLOCK ---
+# --- ADMIN  ---
 st.markdown("---")
 st.subheader("🛠 Brunel Training Lab")
 
