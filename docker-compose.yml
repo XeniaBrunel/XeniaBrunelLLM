@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # AI Model Provider (Mistral engine)
+  # AI Model Provider (Mistral - Llama)
   ollama:
     image: ollama/ollama:latest
     container_name: ai-ollama
@@ -11,7 +11,7 @@ services:
     networks:
       - ai_network
 
-  # Main Web Application (Streamlit)
+  # Web Application (Streamlit)
   ai-detector-web:
     build: .
     container_name: ai-detector-web
@@ -24,21 +24,7 @@ services:
     networks:
       - ai_network
 
-  # Automation Engine (n8n)
-  ai-n8n:
-    image: n8nio/n8n:latest
-    container_name: ai-n8n
-    restart: always
-    environment:
-      - N8N_HOST=n8n.xeniabrunel.com
-      - WEBHOOK_URL=https://n8n.xeniabrunel.com/
-      - N8N_SECURE_COOKIE=true
-    volumes:
-      - n8n_data:/home/node/.n8n
-    networks:
-      - ai_network
-
-  # Reverse Proxy Manager
+  # Proxy Manager
   nginx-proxy-manager:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
@@ -59,6 +45,5 @@ networks:
 
 volumes:
   ollama_data:
-  n8n_data:
   npm_data:
   npm_letsencrypt:
